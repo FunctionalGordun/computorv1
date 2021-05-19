@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Computorv1</title>
+	<style>
+		body {
+			background: black;
+			color: white;
+		}
+		.container {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.title {
+			font-size: 5rem;
+		}
+		.equation_title {
+			font-size: 3rem;
+			text-transform: uppercase;
+		}
+		.form_input {
+			width: 100%;
+			height: 50px;
+			font-size: 1.4rem;
+		}
+		.operators {
+			width: 400px;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+		.num_container {
+			width: 400px;
+			height: 400px;
+		}
+		.num_row {
+			height: 33%;
+			display: flex;
+			flex-direction: row;
+		}
+		.number {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: white;
+			width: 100%;
+			font-size: 2rem;
+			color: black;
+			margin: 5px;
+			border-radius: 10%;
+		}
+		.number:hover {
+			background: #adadad;
+		}
+		
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="title">Computorv1</h1>
+		<form action="./script.js" method="post">
+			<h2 class="equation_title">Введите уравнение</h2>
+			<!-- <label for="equation">Введите уравнение:</label> -->
+			<input class="form_input" type="text" id="equation" name="equation">
+		</form>
+		<div class="operators">
+			<a class="number">+</a>
+			<a class="number">-</a>
+			<a class="number">*</a>
+			<a class="number">/</a>
+			<a class="number">=</a>
+		</div>
+		<div class="num_container">
+			<div class="num_row">
+				<a class="number">7</a>
+				<a class="number">8</a>
+				<a class="number">9</a>
+			</div>
+			<div class="num_row">
+				<a class="number">4</a>
+				<a class="number">5</a>
+				<a class="number">6</a>
+			</div>
+			<div class="num_row">
+				<a class="number">1</a>
+				<a class="number">2</a>
+				<a class="number">3</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
