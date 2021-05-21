@@ -1,8 +1,3 @@
-// var buttons = document.getElementsByClassName("number");
-// buttons[0].addEventListener('click', event => {
-// 	console.log(event);
-// 	debugger;
-// });
 var input = document.getElementById("equation");
 
 document.onclick = function(event) {
@@ -19,18 +14,18 @@ document.onclick = function(event) {
 };
 
 addEventListener("keydown", getKeyboardKey);
-addEventListener("keydup", up);
+// addEventListener("keydup", up);
 
 function getKeyboardKey(e) {
 	var iFlag = isFinite(e.key);
 	if (iFlag)
 		input.value += e.key;
 		// console.log(e.key)
-	if (e.key == "Backspace")
-		console.log("del");
-	debugger;
+	// if (e.key == "Backspace")
+	// 	console.log("del");
+	// debugger;
 }
 
-function up(e) {
-	console.log("up");
-}
+// function up(e) {
+// 	console.log("up");
+// }

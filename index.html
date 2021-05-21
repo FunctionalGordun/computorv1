@@ -75,10 +75,12 @@
 <body>
 	<div class="container">
 		<h1 class="title">Computorv1</h1>
-		<form action="./script.js" method="post">
+		<form id="equation_form" action="" method="post">
 			<h2 class="equation_title">Введите уравнение</h2>
-			<!-- <label for="equation">Введите уравнение:</label> -->
+			<p id="equation_errors"></p>
 			<input class="form_input" type="text" id="equation" name="equation">
+			<button type="submit" class="result">Результат</button>
+			<button type="reset">Reset the form!</button><br><br>
 		</form>
 		<div class="operators">
 			<a class="number">+</a>
@@ -104,8 +106,8 @@
 				<a class="number">3</a>
 			</div>
 		</div>
-		<a class="result">результат</a>
 	</div>
 	<script src="./script.js"></script>
+	<script src="./validate.js"></script>
 </body>
 </html>
