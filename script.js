@@ -13,12 +13,17 @@ document.onclick = function(event) {
 	}
 };
 
+document.addEventListener('click',function (oEvent) {
+	var eErrorList = document.getElementById("equation_errors");
+	eErrorList.textContent = '';
+}) 
+
 addEventListener("keydown", getKeyboardKey);
 // addEventListener("keydup", up);
 
 function getKeyboardKey(e) {
 	var iFlag = isFinite(e.key);
-	if (iFlag)
+	if (iFlag && document.activeElement.className != "form_input")
 		input.value += e.key;
 		// console.log(e.key)
 	// if (e.key == "Backspace")

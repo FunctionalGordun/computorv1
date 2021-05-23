@@ -23,7 +23,7 @@ function printError(sError) {
 
 function containsSpecialCharactersAndNumbers(str){
 	var regexChar = /[a-w, y-z, A-W, Y-Z]/i;
-	var regexSymb = /[/!,/@,/#,/$,/%,/&,/(,/),/{,/},/[,/,\],\\,/_,/~,/`]/i;
+	var regexSymb = /[,!@#\$%&(){}[\]_~`'"\?<>|\\]/i;
 	var re = /=/g;
 	var count = 0;
 
@@ -33,8 +33,8 @@ function containsSpecialCharactersAndNumbers(str){
 	if (regexChar.test(str) || regexSymb.test(str) || count != 1)
 	{
 		console.log("e1");
-	//	console.log(regexChar.test(str));
-	//	console.log(regexSymb.test(str))
+		console.log(regexChar.test(str));
+		console.log(regexSymb.test(str))
 		printError("Incorrect Input");
 		return 0;
 	}
@@ -44,7 +44,7 @@ function containsSpecialCharactersAndNumbers(str){
 function inputValid(sInput) {
 	//const regexp = new RegExp(['\*,\+,\-\/]? ?\d{0,100}\.?\d{0,100} ?[\*,\+,\-\/]? ?[x,X]\^\d?', '');
 	sInput = sInput.replaceAll(' ', '');
-	const re = /[\*,\+,\-\/]?\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d\d?/g;
+	const re = /[\*,\+,\-\/]?\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d?/g;
 
 	let result = "";
 	var count = 0;
@@ -52,31 +52,110 @@ function inputValid(sInput) {
 	if (!containsSpecialCharactersAndNumbers(sInput))
 		return 0;
 	
-	if (!testy(sInput))
-		return 0;
-	while (result = re.exec(sInput)) {
-		var tmp = result[0].match(/[x,X]\^\d/);
-		var degree = tmp[0].split('^')[1];
-		if (degree == 0)
-			var test = result[0].replace(/[x,X]\^\d/, '1');
-		//console.log(test);
-		//console.log(result);
-		//console.log(degree);
-		//var
-		// var container = {
-		// 	k = 
-		// }
-		//console.log(result);
-		count++;
-	}
+	sInput = stepeny(sInput);
+	distributeToArray(sInput);
+	sInput = moveLeftBehindEqual(sInput);
+	console.log(sInput);
+	// if (!testy(sInput))
+	// 	return 0;
+
 	//debugger;
-	if (count == 0)
-	{
-		console.log("e2");
-		printError("Incorrect Input");
-		return 0;
-	}
+	
 	return 1;
+}
+
+function distributeToArray(sInput)
+{
+	const re = /[\*,\+,\-\/]?\d{0,100}\.?\d{0,100}?[\*]?[x,X]\^\d?/g;
+	var result;
+	var splits = sInput.split(/[\+,\-\=]/);
+	var elements = [];
+	var elements2 = [];
+	var len = 0;
+	var k = 0;
+	var degree = 0;
+	var sign = '';
+	var tmp;
+	var i = 0;
+	var element = {
+		sign:null,
+		k:null,
+		degree:null
+	}
+
+	var test = sInput;
+	while (result = re.exec(sInput)) {
+		k = null;
+		sign = null;
+		result = result[0];
+		len = result.length - 1;
+		degree = result[len];
+		if (/[\*]/.test(result))
+		{
+			tmp = result.split('*')[0];
+			if (/[\*,\+,\-\/]/.test(tmp))
+			{
+				sign = tmp[0];
+				k = tmp.slice(1);
+			}
+			else
+				k = tmp;
+		}
+		element = {
+			sign:sign,
+			k:k,
+			degree:degree
+		}
+		elements.push(element);
+		test = test.replace(result, 'p');
+	}
+	console.log(test);
+	//var reg = /[\*\+\-\/]?\d{0,100}\.?\d{0,100}/g;
+	var reg = new RegExp(/[\*\+\-\/]?\d{0,100}\.?\d{0,100}?/g);
+	var res = "";
+	while (res = reg.exec(test)) {
+		console.log("I1" + res.index);
+		console.log("I2" + reg.lastIndex);
+		if (res.index === reg.lastIndex)
+			reg.lastIndex++;
+		res = res[0];
+		console.log(res);
+		if (res)
+		{
+			if (/[\+\-\*\/]/.test(res))
+			{
+				//console.log("yes");
+				sign = res[0];
+				k = res.slice(1);
+			}
+			else
+			{
+				//console.log("no");
+				sign = null;
+				k = res;
+			}
+			element = {
+				sign:sign,
+				k:k,
+				degree:null
+			}
+			elements2.push(element);
+			test = test.replace(res, 'l');
+		}
+	}
+	console.log(test);
+	//console.log(test.split('p'));
+	// while (i < splits.length)
+	// {
+	// 	console.log(splits[i]);
+	// 	i++;
+	// }
+	
+	console.log(elements2);
+}
+
+function moveLeftBehindEqual(sInput){
+
 }
 
 function printStep(str)
@@ -88,13 +167,39 @@ function printStep(str)
 	step.textContent = str;
 
 	fragment.appendChild(step);
-
 	output.appendChild(fragment);
+}
+
+function stepeny(sInput) {
+	const re = /[\*,\+,\-\/]?\d{0,100}\.?\d{0,100}?[\*]?[x,X]\^\d?/g;
+	var result = "";
+	var degree='';
+
+	var len;
+	var tmp = "";
+	while (result = re.exec(sInput)) {
+		//console.log(result);
+		result = result[0];
+		len = result.length - 1;
+		degree = result[len];
+		tmp = result.split('*')[0];
+		if (degree == 0)
+		{
+			if (/[\*]/.test(result))
+				sInput = sInput.replace(result, tmp);
+			else
+				sInput = sInput.replace(sInput, '1');
+		}
+	}
+	printStep("Преобразование: значений выражения, содержащего степени"); //упростить выражение
+	printStep(sInput);
+	return(sInput);
 }
 
 function testy(str) {
 	var splits = str.split(/['\+,\-,\=]/);
-	var operators = str.split(/\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d/);
+	//var operators = str.split(/\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d/);
+	var operators = str.split(/[\+,\-]?\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d/);
 	//console.log(operators);
 	var step = "";
 	var n = 0;
@@ -106,6 +211,7 @@ function testy(str) {
 	{
 		console.log("e3");
 		console.log(splits);
+		console.log(operators);
 		printError("Incorrect Input");
 		return 0;
 	}
@@ -176,7 +282,7 @@ function testy(str) {
 		n++;
 	}
 	console.log(elements)
-	printStep("Преобразование:");
+	printStep("Преобразование: значений выражения, содержащего степени"); //упростить выражение
 	printStep(step);
 	return 1;
 }

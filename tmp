@@ -1,0 +1,53 @@
+		result = result[0];
+		len = result.length;
+		degree = result[len];
+		if (/[\*]/.test(result))
+		{
+			tmp = result.split('*')[0];
+			if (/[\*,\+,\-\/]/.test(tmp))
+			{
+				sign = tmp[0];
+				k = tmp.slice(1);
+			}
+			else
+				k = tmp;
+		}
+		tmp = sign + k;
+
+
+
+				// if (/[\*,\+,\-\/]/.test(result[0]))
+		// {
+
+		// }
+		// if (/[x,X]\^\d/.test(result))
+		// {
+		// 	len = result.length;
+		// 	k = result.split('*')[0];
+		// 	degree = result[len - 1];
+		// 	sign = result[0];
+		// 	if (degree == 0)
+		// 		result = k;
+		// 	element = {
+		// 		sign:result[0],
+		// 		k:k,
+		// 		degree:degree
+		// 	}
+		// 	elements.push(element);
+		// }
+
+
+	while (result = re.exec(sInput)) {
+
+		var tmp = result[0].match(/[x,X]\^\d/);
+		var degree = tmp[0].split('^')[1];
+		if (degree == 0)
+			var test = result[0].replace(/[x,X]\^\d/, '1');
+		count++;
+	}
+	if (count == 0)
+	{
+		console.log("e2");
+		printError("Incorrect Input");
+		return 0;
+	}
