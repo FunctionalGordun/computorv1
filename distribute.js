@@ -60,7 +60,6 @@ function distributeToArray(sInput)
 			{
 				sign = result[0];
 				k = result.slice(1);
-				reg.lastIndex -= k.len;
 			}
 			else
 			{
@@ -74,7 +73,9 @@ function distributeToArray(sInput)
 				flag:null
 
 			}
+
 			elementArrayL.push(element);
+			reg.lastIndex-=k.len;
 			test = test.replace(result, 'l');
 		}
 	}

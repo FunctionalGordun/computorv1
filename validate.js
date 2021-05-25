@@ -57,16 +57,13 @@ function containsSpecialCharactersAndNumbers(str){
 	return 1;
 }
 
-function arrangeArray(elements) {
+function arrangeMultiplyDivisionArray(elements) {
 	var i = 0;
-
-
 	var value;
 
-	console.log("start", elements);
 	while (i < elements.length)
 	{
-		if (elements[i].degree === null)
+		if (elements[i].degree === null && elements[i].flag != 1)
 		{
 			var tmp = elements[i].sign;
 			if (tmp)
@@ -74,7 +71,7 @@ function arrangeArray(elements) {
 				if (tmp == "*")
 				{
 					value = +elements[i-1].k * +elements[i].k;
-					elements[i-1].k = value;
+					elements[i-1].k = value.toString();
 					elements = elements.filter(item => item !== elements[i]);
 					if (i > 0)
 						i--;
@@ -83,24 +80,117 @@ function arrangeArray(elements) {
 				if (tmp == "/")
 				{
 					value = +elements[i-1].k / +elements[i].k;
-					elements[i-1].k = value;
+					elements[i-1].k = value.toString();
 					elements = elements.filter(item => item !== elements[i]);
 					if (i > 0)
 						i--;
 					continue ;
 				}
 			}
-			console.log(elements);
 		}
 		i++;
 	}
+	i = 0;
+	var str = "";
+	while (i < elements.length)
+	{
+		if (elements[i].flag == 1)
+			str+= '=';
+		if (elements[i].degree)
+		{
+			if (elements[i].sign)
+				str += elements[i].sign + elements[i].k + '*x^' + elements[i].degree;
+			else
+				str += elements[i].k + '*x^' + elements[i].degree;
+		}
+		else
+		{
+			if (elements[i].sign)
+				str += elements[i].sign + elements[i].k;
+			else
+				str += elements[i].k;
+		}
+		i++;
+	}
+	printStep("Упрощение выражения: вычисление произведения или разности", 0);
+	printStep(str, 1);
 	return (elements);
-	// console.log("============");
-	//return elements;
-	
-	// elements = elements.filter(item => item !== value);
+}
 
-	// console.log(elements);
+function arrangeAddSubtractArray(elements) {
+	var i = 0;
+	var value;
+
+	while (i < elements.length)
+	{
+		if (elements[i].degree === null && elements[i].flag != 1)
+		{
+			var tmp = elements[i].sign;
+			if (tmp && elements[i-1])
+			{
+				if (tmp == "+")
+				{
+					if (elements[i-1].sign == '-')
+					{
+						value = -parseInt(elements[i-1].k) + +elements[i].k;
+						if (value > 0)
+							elements[i-1].sign = '+';
+					}
+					else
+						value = +elements[i-1].k + +elements[i].k;
+					if (value < 0)
+						value*=-1;
+					elements[i-1].k = value.toString();
+					elements = elements.filter(item => item !== elements[i]);
+					i--;
+					continue ;
+				}
+				if (tmp == "-")
+				{
+					if (elements[i-1].sign == '-')
+						value = +elements[i-1].k + +elements[i].k;
+					else
+					{
+						value = +elements[i-1].k - +elements[i].k;
+						if (value < 0)
+							elements[i-1].sign = '-';
+					}
+					if (value < 0)
+						value*=-1;
+					elements[i-1].k = value.toString();
+					elements = elements.filter(item => item !== elements[i]);
+					i--;
+					continue ;
+				}
+			}
+		}
+		i++;
+	}
+	i = 0;
+	var str = "";
+	while (i < elements.length)
+	{
+		if (elements[i].flag == 1)
+			str+= '=';
+		if (elements[i].degree)
+		{
+			if (elements[i].sign)
+				str += elements[i].sign + elements[i].k + '*x^' + elements[i].degree;
+			else
+				str += elements[i].k + '*x^' + elements[i].degree;
+		}
+		else
+		{
+			if (elements[i].sign)
+				str += elements[i].sign + elements[i].k;
+			else
+				str += elements[i].k;
+		}
+		i++;
+	}
+	printStep("Упрощение выражения: вычисление слагаемых", 0);
+	printStep(str, 1);
+	return (elements);
 }
 
 function main(sInput) {
@@ -118,7 +208,8 @@ function main(sInput) {
 	sInput = stepeny(sInput);
 	elements = distributeToArray(sInput);
 	var test = elements;
-	elements = arrangeArray(elements);
+	elements = arrangeMultiplyDivisionArray(elements);
+	elements = arrangeAddSubtractArray(elements);
 	console.log("last ", elements);
 	sInput = moveLeftBehindEqual(sInput);
 	//console.log(sInput);
