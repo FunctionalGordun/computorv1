@@ -63,7 +63,7 @@ function arrangeMultiplyDivisionArray(elements) {
 
 	while (i < elements.length)
 	{
-		if (elements[i].degree === null && elements[i].flag != 1)
+		if (i > 0 && elements[i].degree === null && elements[i-1].degree === null && elements[i].flag != 1)
 		{
 			var tmp = elements[i].sign;
 			if (tmp)
@@ -123,7 +123,7 @@ function arrangeAddSubtractArray(elements) {
 
 	while (i < elements.length)
 	{
-		if (elements[i].degree === null && elements[i].flag != 1)
+		if (i > 0 && elements[i].degree === null && elements[i-1].degree === null && elements[i].flag != 1)
 		{
 			var tmp = elements[i].sign;
 			if (tmp && elements[i-1])
@@ -207,22 +207,175 @@ function main(sInput) {
 	
 	sInput = stepeny(sInput);
 	elements = distributeToArray(sInput);
-	var test = elements;
 	elements = arrangeMultiplyDivisionArray(elements);
 	elements = arrangeAddSubtractArray(elements);
-	console.log("last ", elements);
-	sInput = moveLeftBehindEqual(sInput);
-	//console.log(sInput);
-	// if (!testy(sInput))
-	// 	return 0;
-
-	//debugger;
+	elements = moveLeftBehindEqual(elements);
+	normalize(elements);
 	
 	return 1;
 }
 
-function moveLeftBehindEqual(sInput){
-	
+function normalize(elements)
+{
+	var i = 0;
+	var sOut = "";
+	var outArray= [];
+
+	elements.sort(function (a, b) {
+		if (a.degree < b.degree) {
+			return 1;
+		}
+		if (a.degree > b.degree) {
+			return -1;
+		}
+		return 0;
+	});
+	while (i < elements.length)
+	{
+		outArray.push(elements[i]);
+		if (elements[i].sign)
+			sOut += elements[i].sign;
+		sOut += elements[i].k;
+		if (elements[i].degree != null)
+			sOut += "*x^" + elements[i].degree;
+		i++;
+	}
+	sOut += "=0";
+	printStep("Поменяем порядок слагаемых или множителей", 0);
+	printStep(sOut, 1);
+
+	i = 0;
+	var value;
+	while (i < outArray.length)
+	{
+		if (i > 0 && outArray[i].degree && outArray[i-1].degree && (outArray[i].degree == outArray[i-1].degree))
+		{
+			if (outArray[i].sign == "+")
+			{
+				if (outArray[i-1].sign == '-')
+				{
+					value = -parseInt(outArray[i-1].k) + +outArray[i].k;
+					if (value > 0)
+						outArray[i-1].sign = '+';
+				}
+				else
+					value = +outArray[i-1].k + +outArray[i].k;
+				if (value < 0)
+					value *=-1;
+				outArray[i-1].k = value.toString();
+				outArray = outArray.filter(item => item !== outArray[i]);
+				i--;
+				continue ;
+			}
+			if (outArray[i].sign == "-")
+			{
+				if (outArray[i-1].sign == '-')
+					value = +outArray[i-1].k + +outArray[i].k;
+				else
+				{
+					value = +outArray[i-1].k - +outArray[i].k;
+					if (value < 0)
+						outArray[i-1].sign = '-';
+				}
+				if (value < 0)
+					value*=-1;
+				outArray[i-1].k = value.toString();
+				outArray = outArray.filter(item => item !== outArray[i]);
+				i--;
+				continue ;
+			}
+		}
+		if (outArray[i].degree === null && outArray[i-1].degree === null)
+		{
+			var tmp = outArray[i].sign;
+			if (tmp && outArray[i-1])
+			{
+				if (tmp == "+")
+				{
+					if (outArray[i-1].sign == '-')
+					{
+						value = -parseInt(outArray[i-1].k) + +outArray[i].k;
+						if (value > 0)
+							outArray[i-1].sign = '+';
+					}
+					else
+						value = +outArray[i-1].k + +outArray[i].k;
+					if (value < 0)
+						value*=-1;
+					outArray[i-1].k = value.toString();
+					outArray = outArray.filter(item => item !== outArray[i]);
+					i--;
+					continue ;
+				}
+				if (tmp == "-")
+				{
+					if (outArray[i-1].sign == '-')
+						value = +outArray[i-1].k + +outArray[i].k;
+					else
+					{
+						value = +outArray[i-1].k - +outArray[i].k;
+						if (value < 0)
+							outArray[i-1].sign = '-';
+					}
+					if (value < 0)
+						value*=-1;
+					outArray[i-1].k = value.toString();
+					outArray = outArray.filter(item => item !== outArray[i]);
+					i--;
+					continue ;
+				}
+			}
+		}
+		i++;
+	}
+	i = 0;
+	sOut = "";
+	while (i < outArray.length)
+	{
+		//outArray.push(elements[i]);
+		if (outArray[i].sign)
+			sOut += outArray[i].sign;
+		sOut += outArray[i].k;
+		if (outArray[i].degree != null)
+			sOut += "*x^" + outArray[i].degree;
+		i++;
+	}
+	sOut += "=0";
+	printStep("Упростим", 0);
+	printStep(sOut, 1);
+}
+
+function moveLeftBehindEqual(elements){
+	var i = 0;
+	var flag = 0;
+	var sOut = "";
+	var outArray = [];
+	while (i < elements.length)
+	{
+		if (elements[i].flag == 1)
+			flag = 1;
+		if (flag == 1)
+		{
+			if (elements[i].sign == '-')
+				elements[i].sign = '+';
+			else if (elements[i].sign == '+')
+				elements[i].sign = '-';
+			else if (elements[i].sign == null)
+				elements[i].sign = '-';
+			elements[i].flag = null;
+		}
+		outArray.push(elements[i]);
+		if (elements[i].sign)
+			sOut += elements[i].sign;
+		sOut += elements[i].k;
+		if (elements[i].degree != null)
+			sOut += "*x^" + elements[i].degree;
+		i++;
+	}
+	sOut += "=0";
+	printStep("Перенесем константы в левую часть равенства", 0);
+	printStep(sOut, 1);
+	return (outArray);
 }
 
 function printStep(str, flag)
@@ -263,94 +416,3 @@ function stepeny(sInput) {
 	printStep(sInput, 1);
 	return(sInput);
 }
-
-// function testy(str) {
-// 	var splits = str.split(/['\+,\-,\=]/);
-// 	//var operators = str.split(/\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d/);
-// 	var operators = str.split(/[\+,\-]?\d{0,100}\.?\d{0,100}?[\*,\+,\-\/]?[x,X]\^\d/);
-// 	//console.log(operators);
-// 	var step = "";
-// 	var n = 0;
-// 	var i = 0;
-// 	var elements = [];
-
-
-// 	if (splits.length != operators.length - 1)
-// 	{
-// 		console.log("e3");
-// 		console.log(splits);
-// 		console.log(operators);
-// 		printError("Incorrect Input");
-// 		return 0;
-// 	}
-// //	while (n < operators.length)
-// //	{
-// //		if (operators[n] == '=')
-// //			operators.splice(n, 1);
-// //		n++;
-// //	}
-// 	while (i < splits.length)
-// 	{
-// 		var len = 0;
-// 		var k = 0;
-// 		var degree = 0;
-// 		var sign = '';
-// 		var element = {
-// 			sign:null,
-// 			k:null,
-// 			degree:null
-// 		}
-
-// 		if (/[x,X]\^\d/.test(splits[i]))
-// 		{
-// 			len = splits[i].length;
-// 			k = splits[i].split('*')[0];
-// 			degree = splits[i][len - 1];
-// 			sign = splits[i][0];
-// 			if (degree == 0)
-// 				splits[i] = k;
-// 			element = {
-// 				sign:operators[n],
-// 				k:k,
-// 				degree:degree
-// 			}
-// 			elements.push(element);
-// 		}
-// 		else
-// 		{
-// 			if (operators[n + 1] == '=')
-// 			{
-// 				element = {
-// 					sign:operators[n + 1],
-// 					k:splits[i],
-// 					degree:null
-// 				}
-// 			}
-// 			else
-// 			{
-// 				element = {
-// 					sign:operators[n],
-// 					k:splits[i],
-// 					degree:null
-// 				}
-// 			}
-// 			elements.push(element);
-// 		}
-		
-// 		// console.log(operators[i]);
-// 		// console.log(splits[i]);
-// 		if (operators[n + 1] == '=')
-// 		{
-// 			step += operators[n] + splits[i] + operators[n + 1];
-// 			n++;
-// 		}
-// 		else
-// 			step += operators[n] + splits[i];
-// 		i++;
-// 		n++;
-// 	}
-// 	console.log(elements)
-// 	printStep("Преобразование: значений выражения, содержащего степени"); //упростить выражение classify 
-// 	printStep(step);
-// 	return 1;
-// }
