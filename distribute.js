@@ -24,7 +24,7 @@ function distributeToArray(sInput)
 
 
 	while (result = re.exec(sInput)) {
-		k = null;
+		k = 0;
 		sign = null;
 		result = result[0];
 		len = result.length - 1;
