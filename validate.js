@@ -207,7 +207,7 @@ function printDiscriminant(d) {
 	else if (d == 0)
 		printStep("Дискриминант равен нулю, одно решение: ", 0)
 	else
-		printStep("Дискриминант отрицательный , Выражение не определено на множестве действительных чисел", 0)
+		printStep("Дискриминант отрицательный , выражение не определено на множестве действительных чисел, решение:", 0)
 
 }
 
@@ -215,12 +215,16 @@ function computeAndPrintRoots(elements, d)
 {
 	if (d > 0)
 	{
-		//debugger ;
 		printStep(String((-1.0 * elements[1].k + d ** 0.5) / (2.0 * elements[0].k)), 3);
 		printStep(String((-1.0 * elements[1].k - d ** 0.5) / (2.0 * elements[0].k)), 3);
 	}
 	else if (d == 0)
 		printStep(String((-1 * elements[1].k) / (2 * elements[0].k)), 3);
+	if (d < 0)
+	{
+		printStep(String((-1.0 * elements[1].k) / (2.0 * elements[0].k)) + '+' + String((d * -1) ** 0.5) + 'i', 3);
+		printStep(String((-1.0 * elements[1].k) / (2.0 * elements[0].k)) + '-' + String((d * -1) ** 0.5) + 'i', 3);
+	}
 }
 
 function printIncompleteQuadratic(elements)
