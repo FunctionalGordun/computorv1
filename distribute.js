@@ -106,11 +106,6 @@ function distributeToArray(sInput)
 			equalFlag = 1;
 		i++;
 	}
-	// console.log(sInput);
-	// console.log(test);
-	// console.log(elementArrayP);
-	// console.log(elementArrayL);
-	//console.log(outArray);
 	return(outArray);
 
 }
